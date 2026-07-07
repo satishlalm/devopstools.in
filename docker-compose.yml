@@ -1,0 +1,18 @@
+services:
+  web:
+    build: .
+    ports: ["3000:3000"]
+    environment:
+      DATABASE_URL: postgresql://devops:devops@db:5432/devopstools
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    depends_on: [db]
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: devops
+      POSTGRES_PASSWORD: devops
+      POSTGRES_DB: devopstools
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    ports: ["5432:5432"]
+volumes:
+  pgdata: {}

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devopstools-web
+  labels: { app: devopstools-web }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: devopstools-web }
+  template:
+    metadata:
+      labels: { app: devopstools-web }
+    spec:
+      containers:
+        - name: web
+          image: <ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/devopstools:latest
+          ports: [{ containerPort: 3000 }]
+          envFrom:
+            - secretRef: { name: devopstools-env }
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+          readinessProbe:
+            httpGet: { path: /, port: 3000 }
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet: { path: /, port: 3000 }
+            initialDelaySeconds: 15
